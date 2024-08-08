@@ -1,0 +1,16 @@
+{
+  "name": "glob-lune",
+  "version": "1.0.0",
+  "description": "Not for publish, For the purpose of referencing the isaacs/node-glob library",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests/test"
+  },
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "glob": "^10.4.5",
+    "globrex": "^0.1.2"
+  }
+}
