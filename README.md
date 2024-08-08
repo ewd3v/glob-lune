@@ -4,7 +4,7 @@
 ## Usage
 Install with git submodule
 ```sh
-git submodule add [URL]
+git submodule add [url] [path/to/submodule]
 ```
 
 Example code
