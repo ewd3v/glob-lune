@@ -1,0 +1,23 @@
+name = "jiwonz/glob"
+version = "0.1.0"
+description = "glob/wildcard filtering utility for lune"
+authors = ["jiwonz <me@jiwonz.kr>"]
+repository = "https://github.com/jiwonz/glob-lune"
+license = "MIT"
+includes = ["README.md", "LICENSE", "pesde.toml", "src/**"]
+
+[target]
+environment = "lune"
+lib = "src/lib.luau"
+
+[indices]
+default = "https://github.com/pesde-pkg/index"
+
+[dev_dependencies]
+selene = { name = "pesde/selene", version = "^0.27.1" }
+luau_lsp = { name = "pesde/luau_lsp", version = "^1.37.0" }
+stylua = { name = "pesde/stylua", version = "^2.0.2" }
+
+[dependencies]
+globrex_lune = { name = "kimpure/globrex_lune", version = "^0.2.3" }
+pathfs = { name = "jiwonz/pathfs", version = "^0.3.0" }
