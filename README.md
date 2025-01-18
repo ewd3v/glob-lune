@@ -1,5 +1,5 @@
 # glob-lune
-`glob` implementation in luau for lune runtime heavily inspired by [glob](https://www.npmjs.com/package/glob) from js
+`glob` implementation in luau for lune runtime heavily inspired by [glob](https://www.npmjs.com/package/glob)
 
 ## Usage
 Install with git submodule
