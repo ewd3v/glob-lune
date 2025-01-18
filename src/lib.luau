@@ -1,7 +1,7 @@
 local globrex = require("../lune_packages/globrex_lune")
 local pathfs = require("../lune_packages/pathfs")
 local fs = pathfs.fs
-local globstarOption = { globstar = true }
+local globstarOption = { globstar = true, extended = true }
 
 local DEFAULT_IGNORE_GLOBS = {
 	`.**{pathfs.pathSeparator}*`,
@@ -76,11 +76,13 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 			for _, globRegex in globRegexes do
 				if not globRegex:test(noCurDirVP:toString()) then
 					valid = false
+					break
 				end
 			end
 			for _, globRegex in ignoreGlobRegexes do
 				if globRegex:test(noCurDirVP:toString()) then
 					valid = false
+					break
 				end
 			end
 			if not valid then

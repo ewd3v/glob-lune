@@ -1,6 +1,0 @@
-[submodule "submodules/globrex"]
-	path = submodules/globrex
-	url = https://github.com/kimpure/globrex-lune.git
-[submodule "submodules/pathfs"]
-	path = submodules/pathfs
-	url = https://github.com/jiwonz/lune-path-fs.git
