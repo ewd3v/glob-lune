@@ -6,7 +6,7 @@ local globstarOption = { globstar = true, extended = true }
 local DEFAULT_IGNORE_GLOBS = {
 	`.**{pathfs.pathSeparator}*`,
 	`**{pathfs.pathSeparator}.*`,
-	`"**{pathfs.pathSeparator}.*{pathfs.pathSeparator}*"`
+	`"**{pathfs.pathSeparator}.*{pathfs.pathSeparator}*"`,
 }
 local EMPTY_TABLE = {}
 
@@ -29,7 +29,8 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 	if unwrappedOption.noglobstar then
 		globrexOption = nil
 	end
-	local globRegexes do
+	local globRegexes
+	do
 		if type(pattern) == "string" then
 			globRegexes = { globrex(pattern, globrexOption).regex }
 		elseif type(pattern) == "table" then
@@ -42,7 +43,8 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 		end
 	end
 
-	local ignoreGlobRegexes = table.create(#DEFAULT_IGNORE_GLOBS) do
+	local ignoreGlobRegexes = table.create(#DEFAULT_IGNORE_GLOBS)
+	do
 		local ignore = table.clone(DEFAULT_IGNORE_GLOBS)
 		if unwrappedOption.ignore then
 			if type(unwrappedOption.ignore) == "string" then
@@ -58,15 +60,15 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 		end
 	end
 
-	local function scan(asPath: pathfs.AsPath)
+	local function scan(fullPath: pathfs.Path, path: pathfs.Path)
 		if unwrappedOption.maxDepth and unwrappedOption.maxDepth <= depth then
 			return
 		end
-		local path = pathfs.Path.from(asPath)
-		for _, v in fs.readDir(path) do
+		for _, v in fs.readDir(fullPath) do
+			local vfp = fullPath:join(v)
 			local vp = path:join(v)
-			if fs.isDir(vp) then
-				scan(vp)
+			if fs.isDir(vfp) then
+				scan(vfp, vp)
 				if unwrappedOption.nodir then
 					continue
 				end
@@ -89,16 +91,16 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 				continue
 			end
 			if not unwrappedOption.dotRelative then
-				vp = noCurDirVP
+				vfp = pathfs.withoutCurDir(vfp)
 			end
 			if unwrappedOption.absolute then
-				vp = pathfs.absolute(vp)
+				vfp = pathfs.absolute(vfp)
 			end
-			table.insert(result, vp)
+			table.insert(result, vfp)
 		end
 		depth += 1
 	end
-	scan(unwrappedOption.cwd or ".")
+	scan(pathfs.Path.from(unwrappedOption.cwd or "."), pathfs.Path.from("."))
 
 	return result
 end
