@@ -11,7 +11,7 @@ local DEFAULT_IGNORE_GLOBS = {
 local EMPTY_TABLE = {}
 
 export type Option = {
-	cwd: string?,
+	cwd: pathfs.AsPath?,
 	noglobstar: boolean?,
 	maxDepth: number?,
 	nodir: boolean?,
