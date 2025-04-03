@@ -1,4 +1,4 @@
-Fork of https://github.com/jiwonz/glob-lune containing fixes & updates not yet merged into the official repository.
+Fork of https://github.com/jiwonz/glob-lune containing my fixes & updates that may not merged into the official repository yet.
 
 # glob-lune
 
