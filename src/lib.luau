@@ -1,7 +1,7 @@
 local globrex = require("../lune_packages/globrex_lune")
 local pathfs = require("../lune_packages/pathfs")
 local fs = pathfs.fs
-local globstarOption = { globstar = true, extended = true }
+local globrexOption = { filepath = true, globstar = true, extended = true }
 
 local DEFAULT_IGNORE_GLOBS = {
 	`.**{pathfs.pathSeparator}*`,
@@ -13,6 +13,7 @@ local EMPTY_TABLE = {}
 export type Option = {
 	cwd: string?,
 	noglobstar: boolean?,
+	noext: boolean?,
 	maxDepth: number?,
 	nodir: boolean?,
 	ignore: (string | { string })?,
@@ -24,25 +25,28 @@ export type Option = {
 return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 	local result = {}
 	local depth = 0
-	local globrexOption: typeof(globstarOption)? = globstarOption
+	local newGlobrexOption = globrexOption
 	local unwrappedOption = (option or EMPTY_TABLE) :: Option
 	if unwrappedOption.noglobstar then
-		globrexOption = nil
+		newGlobrexOption.globstar = false
 	end
-	local globRegexes do
+	if unwrappedOption.noext then
+		newGlobrexOption.extended = false
+	end
+	local globRegexes: { globrex.RegExp } do
 		if type(pattern) == "string" then
-			globRegexes = { globrex(pattern, globrexOption).regex }
+			globRegexes = { (globrex(pattern, newGlobrexOption).path :: any).regex }
 		elseif type(pattern) == "table" then
 			globRegexes = pattern :: any
 			for i, v in pattern do
-				globRegexes[i] = globrex(v, globrexOption).regex
+				globRegexes[i] = (globrex(v, newGlobrexOption).path :: any).regex
 			end
 		else
 			error("Glob pattern must be a string or table")
 		end
 	end
 
-	local ignoreGlobRegexes = table.create(#DEFAULT_IGNORE_GLOBS) do
+	local ignoreGlobRegexes: { globrex.RegExp } = table.create(#DEFAULT_IGNORE_GLOBS) do
 		local ignore = table.clone(DEFAULT_IGNORE_GLOBS)
 		if unwrappedOption.ignore then
 			if type(unwrappedOption.ignore) == "string" then
@@ -54,7 +58,7 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 			end
 		end
 		for i, v in ignore do
-			ignoreGlobRegexes[i] = globrex(v, globstarOption).regex
+			ignoreGlobRegexes[i] = (globrex(v, globrexOption).path :: any).regex
 		end
 	end
 
