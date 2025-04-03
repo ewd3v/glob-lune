@@ -11,7 +11,7 @@ local DEFAULT_IGNORE_GLOBS = {
 local EMPTY_TABLE = {}
 
 export type Option = {
-	cwd: string?,
+	cwd: pathfs.AsPath?,
 	noglobstar: boolean?,
 	noext: boolean?,
 	maxDepth: number?,
@@ -102,7 +102,13 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 		end
 		depth += 1
 	end
-	scan(pathfs.Path.from(unwrappedOption.cwd or "."), pathfs.Path.from("."))
+
+	local cwd = tostring(unwrappedOption.cwd)
+	if not cwd or cwd == "" then
+		cwd = "."
+	end
+
+	scan(pathfs.Path.from(cwd), pathfs.Path.from("."))
 
 	return result
 end
