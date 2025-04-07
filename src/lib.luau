@@ -11,7 +11,7 @@ local DEFAULT_IGNORE_GLOBS = {
 local EMPTY_TABLE = {}
 
 export type Option = {
-	cwd: string?,
+	cwd: pathfs.AsPath?,
 	noglobstar: boolean?,
 	noext: boolean?,
 	maxDepth: number?,
@@ -62,15 +62,15 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 		end
 	end
 
-	local function scan(asPath: pathfs.AsPath)
+	local function scan(fullPath: pathfs.Path, path: pathfs.Path)
 		if unwrappedOption.maxDepth and unwrappedOption.maxDepth <= depth then
 			return
 		end
-		local path = pathfs.Path.from(asPath)
-		for _, v in fs.readDir(path) do
+		for _, v in fs.readDir(fullPath) do
+			local vfp = fullPath:join(v)
 			local vp = path:join(v)
-			if fs.isDir(vp) then
-				scan(vp)
+			if fs.isDir(vfp) then
+				scan(vfp, vp)
 				if unwrappedOption.nodir then
 					continue
 				end
@@ -93,16 +93,22 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 				continue
 			end
 			if not unwrappedOption.dotRelative then
-				vp = noCurDirVP
+				vfp = pathfs.withoutCurDir(vfp)
 			end
 			if unwrappedOption.absolute then
-				vp = pathfs.absolute(vp)
+				vfp = pathfs.absolute(vfp)
 			end
-			table.insert(result, vp)
+			table.insert(result, vfp)
 		end
 		depth += 1
 	end
-	scan(unwrappedOption.cwd or ".")
+
+	local cwd = tostring(unwrappedOption.cwd)
+	if not cwd or cwd == "" then
+		cwd = "."
+	end
+
+	scan(pathfs.Path.from(cwd), pathfs.Path.from("."))
 
 	return result
 end
