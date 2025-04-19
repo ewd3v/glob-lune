@@ -25,7 +25,7 @@ export type Option = {
 return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 	local result = {}
 	local depth = 0
-	local newGlobrexOption = globrexOption
+	local newGlobrexOption = table.clone(globrexOption)
 	local unwrappedOption = (option or EMPTY_TABLE) :: Option
 	if unwrappedOption.noglobstar then
 		newGlobrexOption.globstar = false
@@ -105,10 +105,7 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 		depth += 1
 	end
 
-	local cwd = tostring(unwrappedOption.cwd)
-	if not cwd or cwd == "" then
-		cwd = "."
-	end
+	local cwd = tostring(unwrappedOption.cwd or ".")
 
 	scan(pathfs.Path.from(cwd), pathfs.Path.from("."))
 
