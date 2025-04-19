@@ -6,7 +6,7 @@ local globrexOption = { filepath = true, globstar = true, extended = true }
 local DEFAULT_IGNORE_GLOBS = {
 	`.**{pathfs.pathSeparator}*`,
 	`**{pathfs.pathSeparator}.*`,
-	`"**{pathfs.pathSeparator}.*{pathfs.pathSeparator}*"`
+	`"**{pathfs.pathSeparator}.*{pathfs.pathSeparator}*"`,
 }
 local EMPTY_TABLE = {}
 
@@ -33,7 +33,8 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 	if unwrappedOption.noext then
 		newGlobrexOption.extended = false
 	end
-	local globRegexes: { globrex.RegExp } do
+	local globRegexes: { globrex.RegExp }
+	do
 		if type(pattern) == "string" then
 			globRegexes = { (globrex(pattern, newGlobrexOption).path :: any).regex }
 		elseif type(pattern) == "table" then
@@ -46,7 +47,8 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 		end
 	end
 
-	local ignoreGlobRegexes: { globrex.RegExp } = table.create(#DEFAULT_IGNORE_GLOBS) do
+	local ignoreGlobRegexes: { globrex.RegExp } = table.create(#DEFAULT_IGNORE_GLOBS)
+	do
 		local ignore = table.clone(DEFAULT_IGNORE_GLOBS)
 		if unwrappedOption.ignore then
 			if type(unwrappedOption.ignore) == "string" then
