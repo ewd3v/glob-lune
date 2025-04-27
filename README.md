@@ -1,4 +1,7 @@
+Fork of https://github.com/jiwonz/glob-lune containing my fixes & updates that may not merged into the official repository yet.
+
 # glob-lune
+
 `glob` implementation in luau for lune runtime heavily inspired by [glob](https://www.npmjs.com/package/glob)
 
 ## Installation
@@ -15,6 +18,7 @@ print("glob result:", files)
 ```
 
 ## Credits & Special thanks
+
 - Inspiration: [glob](https://www.npmjs.com/package/glob)
 - `glob` to regex: [globrex-lune](https://github.com/kimpure/globrex-lune)
 - Beautiful & useful built-in libraries: [Lune](https://github.com/lune-org/lune)
