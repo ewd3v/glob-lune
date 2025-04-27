@@ -4,25 +4,18 @@ Fork of https://github.com/jiwonz/glob-lune containing my fixes & updates that m
 
 `glob` implementation in luau for lune runtime heavily inspired by [glob](https://www.npmjs.com/package/glob)
 
-## Usage
-
-Install with git submodule
-
+## Installation
+Install via pesde (Recommended)
 ```sh
-git submodule add [url] [path/to/submodule]
+pesde add jiwonz/glob
 ```
 
-Example code
-
+## Example code
 ```luau
 local files = glob("**/*.js", { ignore = "node_modules\\**" })
 
 print("glob result:", files)
 ```
-
-## Dependencies
-
-This library depends on [lune-path-fs](https://github.com/jiwonz/lune-path-fs) and [globrex-lune](https://github.com/kimpure/globrex-lune)
 
 ## Credits & Special thanks
 

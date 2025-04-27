@@ -6,7 +6,7 @@ local globrexOption = { filepath = true, globstar = true, extended = true }
 local DEFAULT_IGNORE_GLOBS = {
 	`.**{pathfs.pathSeparator}*`,
 	`**{pathfs.pathSeparator}.*`,
-	`"**{pathfs.pathSeparator}.*{pathfs.pathSeparator}*"`
+	`"**{pathfs.pathSeparator}.*{pathfs.pathSeparator}*"`,
 }
 local EMPTY_TABLE = {}
 
@@ -25,7 +25,7 @@ export type Option = {
 return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 	local result = {}
 	local depth = 0
-	local newGlobrexOption = globrexOption
+	local newGlobrexOption = table.clone(globrexOption)
 	local unwrappedOption = (option or EMPTY_TABLE) :: Option
 	if unwrappedOption.noglobstar then
 		newGlobrexOption.globstar = false
@@ -33,7 +33,8 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 	if unwrappedOption.noext then
 		newGlobrexOption.extended = false
 	end
-	local globRegexes: { globrex.RegExp } do
+	local globRegexes: { globrex.RegExp }
+	do
 		if type(pattern) == "string" then
 			globRegexes = { (globrex(pattern, newGlobrexOption).path :: any).regex }
 		elseif type(pattern) == "table" then
@@ -46,7 +47,8 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 		end
 	end
 
-	local ignoreGlobRegexes: { globrex.RegExp } = table.create(#DEFAULT_IGNORE_GLOBS) do
+	local ignoreGlobRegexes: { globrex.RegExp } = table.create(#DEFAULT_IGNORE_GLOBS)
+	do
 		local ignore = table.clone(DEFAULT_IGNORE_GLOBS)
 		if unwrappedOption.ignore then
 			if type(unwrappedOption.ignore) == "string" then
@@ -76,10 +78,10 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 				end
 			end
 			local noCurDirVP = pathfs.withoutCurDir(vp)
-			local valid = true
+			local valid = false
 			for _, globRegex in globRegexes do
-				if not globRegex:test(noCurDirVP:toString()) then
-					valid = false
+				if globRegex:test(noCurDirVP:toString()) then
+					valid = true
 					break
 				end
 			end
@@ -103,10 +105,7 @@ return function(pattern: string | { string }, option: Option?): { pathfs.Path }
 		depth += 1
 	end
 
-	local cwd = tostring(unwrappedOption.cwd)
-	if not cwd or cwd == "" then
-		cwd = "."
-	end
+	local cwd = tostring(unwrappedOption.cwd or ".")
 
 	scan(pathfs.Path.from(cwd), pathfs.Path.from("."))
 
