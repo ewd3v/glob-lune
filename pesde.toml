@@ -1,7 +1,7 @@
 name = "jiwonz/glob"
 version = "0.1.1"
 description = "glob/wildcard filtering utility for lune"
-authors = ["jiwonz <me@jiwonz.kr>", "EwDev"]
+authors = ["jiwonz <me@jiwonz.kr>"]
 repository = "https://github.com/jiwonz/glob-lune"
 license = "MIT"
 includes = ["README.md", "LICENSE", "pesde.toml", "src/**"]
