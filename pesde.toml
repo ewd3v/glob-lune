@@ -1,5 +1,5 @@
 name = "ewdev/glob"
-version = "0.1.2"
+version = "0.1.3-rc.1"
 description = "[Fork] glob/wildcard filtering utility for lune"
 authors = ["jiwonz <me@jiwonz.kr>", "EwDev"]
 repository = "https://github.com/ewd3v/glob-lune"
